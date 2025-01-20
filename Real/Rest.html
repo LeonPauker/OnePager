@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Timeline with Scrollable Content</title>
+    
+    <style>
+        /* Basic Styling */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            background-color: #f5f5f5;
+            color: #333;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            display: flex;
+            width: 90%;
+            max-width: 1400px;
+            padding: 20px;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .timeline {
+            width: 30%;
+            position: relative;
+            padding-right: 40px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .timeline .timeline-item {
+            display: flex;
+            align-items: center;
+            margin: 40px 0;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            position: relative;
+        }
+
+        .timeline .date {
+            font-size: 1.5em;
+            color: #333;
+            margin-right: 20px;
+            width: 80px;
+            text-align: right;
+        }
+
+        .timeline .square {
+            width: 10vh;
+            height: 10vh;
+            background-color: #FFFFFF;
+            border: 2px solid #999;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s, background-color 0.3s, color 0.3s;
+        }
+
+        .timeline .square:hover {
+            transform: scale(1.1);
+            background-color: #e91e63;
+            color: white;
+            border-color: #e91e63;
+        }
+
+        .content {
+            width: 70%;
+            padding-left: 40px;
+        }
+
+        .content-panel {
+            display: none;
+            font-size: 1.2em;
+            max-height: 600px;
+            overflow-y: auto;
+            transition: background-color 0.3s, color 0.3s;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .content-panel.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Style for the Webdesign section */
+        .content-panel#content-webdesign {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4, #fad0c4, #f3e1e1);
+            border: 2px solid #e91e63;
+            font-family: 'Georgia', serif;
+            color: #333;
+            padding: 30px;
+            text-align: left;
+            box-shadow: 0 8px 20px rgba(233, 30, 99, 0.4);
+            max-height: 600px;
+            overflow-y: auto;
+            font-size: 1.2em;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .content-panel#content-webdesign:hover {
+            box-shadow: 0 12px 24px rgba(233, 30, 99, 0.6);
+            transform: translateY(-5px) rotate(-1deg);
+        }
+
+        .content-panel#content-webdesign h1 {
+            font-size: 2.5em;
+            color: #e91e63;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px solid #e91e63;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            animation: text-glow 1.5s ease-in-out infinite alternate;
+        }
+
+        .content-panel#content-webdesign p {
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+
+        .content-panel#content-webdesign img {
+            width: 100%;
+            margin: 10px 0;
+            border: 2px solid #e91e63;
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+
+        .content-panel#content-webdesign img:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0px rgba(233, 30, 99, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 15px rgba(233, 30, 99, 0.8);
+            }
+            100% {
+                box-shadow: 0 0 0px rgba(233, 30, 99, 0.4);
+            }
+        }
+
+        @keyframes text-glow {
+            from {
+                text-shadow: 0 0 5px #e91e63, 0 0 10px #e91e63, 0 0 15px #e91e63;
+            }
+            to {
+                text-shadow: 0 0 10px #ff80ab, 0 0 20px #ff80ab, 0 0 30px #ff80ab;
+            }
+        }
+
+        /* New Tab Bar Button */
+        .tab-button {
+            width: 10vh;
+            height: 10vh;
+            background-color: #FFFFFF;
+            border: 2px solid #999;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s, background-color 0.3s, color 0.3s;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .tab-button:hover {
+            background-color: #e91e63;
+            transform: scale(1.05);
+            color: white;
+        }
+
+        /* Style for the 1980 section */
+        .content-panel#content-1980 {
+            background-color: #f0f0f0;
+            border: 2px solid #333;
+            font-family: 'bitmap', monospace;
+            color: #333;
+            padding: 30px;
+            text-align: left;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            max-height: 600px;
+            overflow-y: auto;
+            font-size: 1.1em;
+        }
+
+        .content-panel#content-1980 h1 {
+            font-size: 2em;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .content-panel#content-1980 p {
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+
+        .content-panel#content-1980 img {
+            image-rendering: pixelated;
+            width: 100%;
+            height: 300px;
+            margin: 10px 0;
+            border: 2px solid #999;
+        }
+
+        /* Style for the 2000 section */
+        .content-panel#content-2000 {
+            background-image: url('wood.jpg'); /* Replace with your image URL */
+            background-size: cover;
+            background-position: center;
+            border: 2px solid #333;
+            font-family: 'bitmap', monospace;
+            color: #333;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            max-height: 600px;
+            overflow-y: auto;
+            font-size: 1.1em;
+        }
+
+        .content-panel#content-2000 h1 {
+            font-size: 2em;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Card Layout */
+        .card-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            position: relative;
+        }
+
+        .card {
+            width: 200px;
+            height: 300px;
+            perspective: 1000px;
+            position: absolute;
+            transition: transform 1s ease-in-out;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.5s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .card:hover .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.1em;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .card-front {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .card-back {
+            background-color: #f9f9f9;
+            color: #333;
+            transform: rotateY(180deg);
+        }
+
+        @keyframes shuffle {
+            0% {
+                transform: translate(0px, 0px);
+            }
+            25% {
+                transform: translate(50px, 50px) rotate(120deg);
+            }
+            50% {
+                transform: translate(-50px, 50px) rotate(240deg);
+            }
+            75% {
+                transform: translate(-50px, -50px) rotate(360deg);
+            }
+            100% {
+                transform: translate(0px, 0px);
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Timeline -->
+        <div class="timeline">
+            <!-- New Tab Bar Button -->
+            <div class="timeline-item" onclick="showContent('webdesign')">
+                <div class="date"></div>
+                <div class="tab-button">Webdesign</div>
+            </div>
+            <div class="timeline-item" onclick="showContent(1980)">
+                <div class="date"></div>
+                <div class="square">1980</div>
+            </div>
+            <div class="timeline-item" onclick="showContent(1990)">
+                <div class="date"></div>
+                <div class="square">1990</div>
+            </div>
+            <div class="timeline-item" onclick="showContent(2000)">
+                <div class="date"></div>
+                <div class="square">2000</div>
+            </div>
+            <div class="timeline-item" onclick="showContent(2010)">
+                <div class="date"></div>
+                <div class="square">2010</div>
+            </div>
+            <div class="timeline-item" onclick="showContent(2020)">
+                <div class="date"></div>
+                <div class="square">2020</div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <section id="s1980">
+            <div id="content-1980" class="content-panel">
+                <h1>1980 - Hypercard</h1>
+                <p>1980 marked a year of technological shifts as Apple introduced Hypercard, a revolutionary program allowing users to create interactive, visual content that was interconnected.</p>
+                <p>With Hypercard, anyone could create simple yet powerful programs without deep programming knowledge. This was a milestone as it brought the concept of hypertext to the public, laying the groundwork for the web as we know it today.</p>
+                <p>Hypercard was a digital experiment significant to the computing world, paving the way for web pages and interactive media development. It was the first example of a user interface based on a linked structure—similar to the later World Wide Web developed in 1990.</p>
+                <p>In many ways, it was a "gem" from early computing history, still admired by tech enthusiasts today. The application relied on simple graphics, ASCII text, and minimal navigation elements compatible with the computers and monitors of the time.</p>
+                <img src="susankareicons.png" alt="Susan Kare Icon">
+                <p>https://winworldpc.com/product/hypercard</p>
+                <p>The software was very popular on early Macintosh computers and influenced many later interactive programs.</p>
+                <img src="hypercard-home.webp" alt="hyper card">
+                <p>https://lowendmac.com/2003/remembering-hypercard/</p>
+            </div>
+        </section>
+
+        <section id="swebdesign">
+            <div id="content-webdesign" class="content-panel">
+                <h1>The Evolution of Web Design</h1>
+                <p>The journey of web design began in the early 1990s with simple text-based sites, where minimal HTML was the norm. As the internet expanded, so did the need for more engaging and visually appealing web pages.</p>
+                <p>In the late 1990s, the introduction of CSS allowed designers to separate content from presentation, offering more control over the look and feel of websites. This era saw the rise of table-based layouts, which, despite their limitations, were a significant improvement over previous methods.</p>
+                <p>The early 2000s marked a pivotal point with the adoption of JavaScript and Flash, enabling interactive content and animations. This period witnessed the birth of dynamic websites that could respond to user interactions, paving the way for modern web applications.</p>
+                <p>As mobile devices became ubiquitous, responsive design emerged as a critical aspect of web design. Frameworks like Bootstrap and Flexbox helped designers create flexible layouts that adapt to different screen sizes, ensuring a consistent user experience across devices.</p>
+                <p>Today, web design is not just about aesthetics but also about functionality, accessibility, and performance. Modern tools like React and Angular facilitate the development of single-page applications, while design systems ensure brand consistency and streamline the design process.</p>
+                <img src="webdesign-history.jpg" alt="Webdesign History">
+                <p>The future of web design looks promising with the advent of technologies like artificial intelligence and virtual reality, which are poised to redefine how users interact with digital content.</p>
+            </div>
+        </section>
+
+        <section id="s2000">
+            <div id="content-2000" class="content-panel">
+                <h1>2000 - From Static to Dynamic</h1>
+                <div class="card-container">
+                    <div class="card" style="animation: shuffle 1s ease forwards;">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <h3>Card 1</h3>
+                                <p>Front content of Card 1</p>
+                            </div>
+                            <div class="card-back">
+                                <p>Back content of Card 1: More detailed information about an event from the 2000s.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="animation: shuffle 1s ease 0.2s forwards;">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <h3>Card 2</h3>
+                                <p>Front content of Card 2</p>
+                            </div>
+                            <div class="card-back">
+                                <p>Back content of Card 2: More detailed information about another event from the 2000s.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card" style="animation: shuffle 1s ease 0.4s forwards;">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <h3>Card 3</h3>
+                                <p>Front content of Card 3</p>
+                            </div>
+                            <div class="card-back">
+                                <p>Back content of Card 3: More detailed information about a third event from the 2000s.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Javascript Code -->
+        <script>
+            function showContent(year) {
+                const allContent = document.querySelectorAll('.content-panel');
+                allContent.forEach(content => content.classList.remove('active'));
+                
+                const contentId = '#content-' + year;
+                const content = document.querySelector(contentId);
+                content.classList.add('active');
+
+                if (year === 2000) {
+                    shuffleCards();
+                }
+            }
+
+            function shuffleCards() {
+                const cards = document.querySelectorAll('#content-2000 .card');
+                cards.forEach((card, index) => {
+                    card.style.animation = `shuffle 1s ease ${index * 0.2}s forwards`;
+                });
+            }
+        </script>
+    </div>
+</body>
+</html>
