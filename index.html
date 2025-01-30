@@ -870,7 +870,7 @@ body.dark-mode .timeline .hexagon:hover {
                 tooltip.style.left = `${rect.left + window.scrollX}px`;
                 tooltip.style.top = `${rect.bottom + window.scrollY}px`;
 
-                // Remove the tooltip when clicking elsewhere
+                // Remove the tooltip when clicking elsewhere.
                 document.addEventListener('click', function removeTooltip(event) {
                     if (!tooltip.contains(event.target) && !element.contains(event.target)) {
                         tooltip.remove();
@@ -878,7 +878,6 @@ body.dark-mode .timeline .hexagon:hover {
                     }
                 });
             }
-
             function toggleDarkMode() {
                 document.body.classList.toggle('dark-mode');
             }
